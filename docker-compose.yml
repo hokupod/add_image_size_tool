@@ -1,0 +1,10 @@
+version: '3'
+services:
+  ruby:
+    build:
+        context: .
+    volumes:
+        - .:/home
+    ports:
+       - "1234:1234"
+       - "26162:26162"
