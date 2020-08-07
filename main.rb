@@ -8,17 +8,23 @@ unless ARGV[0].nil?
   src_prefix = ARGV[1] ? ARGV[1].chomp : "https:"
 
   dest = %(dest/#{File.basename(src)})
-  doc = Nokogiri::HTML(File.open(src))
+  html_src = Nokogiri::HTML.fragment(File.open(src).read)
 
-  tags = doc.search("img").map { |tag|
+  tags = html_src.search("img").map { |tag|
+    next if tag["width"] && tag["height"]
+
     key = tag.attributes["src"].value
     uri = src_prefix + key
     width, height = FastImage.size(uri)
-    { search_word: %(src="#{key}"), replace_str: %(src="#{key}" width="#{width}" height="#{height}") }
+
+    replace_strs = [%(src="#{key}")]
+    replace_strs << %(width="#{width}") if tag["width"].nil?
+    replace_strs << %(height="#{height}") if tag["height"].nil?
+    { search_word: %(src="#{key}"), replace_str: replace_strs.join(" ") }
   }
 
   content = File.read(src)
-  tags.uniq.each { content.gsub!(_1[:search_word], _1[:replace_str]) }
+  tags.uniq.compact.each { content.gsub!(_1[:search_word], _1[:replace_str]) }
 
   File.open(dest, "w") { _1.write content }
 else

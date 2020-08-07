@@ -1,3 +1,6 @@
+set -eu -o pipefail
+trap 'echo "ERROR: line no = $LINENO, exit status = $?" >&2; exit 1' ERR
+
 cd $(dirname $0) || exit 1
 
 if [ $DISABLE_BUILD_CONTAINER -ne 1 ]; then
