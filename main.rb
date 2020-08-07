@@ -5,7 +5,7 @@ require 'fastimage'
 
 unless ARGV[0].nil?
   src = ARGV[0].chomp
-  src_prefix = ARGV[1] ? ARGV[1].chomp : "https:"
+  src_prefix = ARGV[1] ? ARGV[1].chomp : ""
 
   dest = %(dest/#{File.basename(src)})
   html_src = Nokogiri::HTML.fragment(File.open(src).read)
@@ -17,7 +17,7 @@ unless ARGV[0].nil?
     uri = src_prefix + key
     width, height = FastImage.size(uri)
 
-    replace_strs = [%(src="#{key}")]
+    replace_strs = %W(src="#{key}")
     replace_strs << %(width="#{width}") if tag["width"].nil?
     replace_strs << %(height="#{height}") if tag["height"].nil?
     { search_word: %(src="#{key}"), replace_str: replace_strs.join(" ") }
