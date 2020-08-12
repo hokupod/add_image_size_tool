@@ -1,6 +1,3 @@
-set -eu -o pipefail
-trap 'echo "ERROR: line no = $LINENO, exit status = $?" >&2; exit 1' ERR
-
 if test $# -ne 1 -a $# -ne 2; then
     echo argument error: $*
     exit 1
