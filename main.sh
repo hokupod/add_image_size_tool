@@ -1,3 +1,5 @@
+set -e
+
 if test $# -ne 1 -a $# -ne 2; then
     echo argument error: $*
     exit 1
@@ -5,7 +7,7 @@ fi
 
 cd $(dirname $0) || exit 1
 
-if test $DISABLE_BUILD_CONTAINER -ne 1; then
+if [[ $DISABLE_BUILD_CONTAINER != 1 ]]; then
     echo 'step0: docker build'
     docker build -t hokupod/ruby_fastimage .
 fi
